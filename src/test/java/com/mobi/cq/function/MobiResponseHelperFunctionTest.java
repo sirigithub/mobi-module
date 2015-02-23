@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
- * Created by m17218 on 22/02/15.
+ * Tests for the Response helper class
  */
 public class MobiResponseHelperFunctionTest {
     @Mock
@@ -39,7 +39,7 @@ public class MobiResponseHelperFunctionTest {
         Node node = mock(Node.class);
         Property property = mock(Property.class);
         PrintWriter writer = mock(PrintWriter.class);
-        String requestPath = "/content/anz/homepage.mobi";
+        String requestPath = "/content/anz/creditcards.silver.mobi";
 
         when(resource.getPath()).thenReturn(requestPath);
         when(resourceResolver.getResource(requestPath)).thenReturn(resource);
@@ -52,31 +52,33 @@ public class MobiResponseHelperFunctionTest {
     }
 
     @Test
-    public void testJSONObjectContainsPageName()  throws Exception
+    public void testJSONObjectContainsPageDetails()  throws Exception
     {
         Node node = mock(Node.class);
         Property titleProperty = mock(Property.class);
         Property dateProperty = mock(Property.class);
 
         PrintWriter writer = mock(PrintWriter.class);
-        String requestPath = "/content/medibank/retail/health-insurance.mobi";
+        String requestPath = "/content/anz/creditcards.silver.mobi";
         String pageTitle ="pageTitle";
+        String lastModifiedDate="lastModifiedDate";
 
         when(resource.getPath()).thenReturn(requestPath);
         when(resourceResolver.getResource(requestPath)).thenReturn(resource);
         when(resource.adaptTo(Node.class)).thenReturn(node);
 
         when(node.getProperty("jcr:title")).thenReturn(titleProperty);
-        when(titleProperty.toString()).thenReturn("Health Insurance");
+        when(titleProperty.toString()).thenReturn("Credit Cards");
 
-        when(node.getProperty("jcr:title")).thenReturn(dateProperty);
+        when(node.getProperty("cq:lastModified")).thenReturn(dateProperty);
         when(dateProperty.toString()).thenReturn("2015-02-22 00:00:000");
 
         MobiResponseHelperFunction helperFunction = new MobiResponseHelperFunction();
         JSONObject returnObject = helperFunction.getResponseObject(resourceResolver, requestPath);
         boolean containsTitle = returnObject.toString().contains(pageTitle);
+        boolean containsDate = returnObject.toString().contains(lastModifiedDate);
         assertTrue(containsTitle);
+        assertTrue(containsDate);
 
     }
-
 }
