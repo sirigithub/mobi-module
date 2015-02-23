@@ -1,8 +1,5 @@
 package com.mobi.cq.function;
 
-/**
- * Created by Sirisha on 22/02/15.
- */
 import com.day.cq.replication.PathNotFoundException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.commons.json.JSONArray;
@@ -14,9 +11,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import java.util.HashMap;
 
-/**
- * Created by m17218 on 22/02/15.
- */
 public  class MobiResponseHelperFunction {
 
     private static String JCR_TITLE="jcr:title";
@@ -25,7 +19,7 @@ public  class MobiResponseHelperFunction {
     private static String MODIFIED_DATE="lastModifiedDate";
 
     /**
-     * Method returns a JSON Object which has the following response
+     * Method returns a JSON Object which has the following response structure
      * Response{
      * data{
      *  pageTitle : Title
@@ -43,9 +37,13 @@ public  class MobiResponseHelperFunction {
      */
     public  JSONObject getResponseObject(ResourceResolver resourceResolver, String requestPath) throws PathNotFoundException,RepositoryException,JSONException
     {
+        if(resourceResolver.getResource(requestPath) ==null)
+        {
+            throw new ResourceNotFoundException(" The resource specified in path"+requestPath+" does not exist");
+        }
         //get primary node
         Node node = resourceResolver.getResource(requestPath).adaptTo(Node.class);
-        //Obtain page title
+        //Obtain page title and modified date
         String pageTitle = (node.hasProperty(JCR_TITLE)== false)?"":node.getProperty(JCR_TITLE).getString();
         String lastModifiedDate = (node.hasProperty(JCR_MODIFIED_DATE)== false)?"":node.getProperty(JCR_MODIFIED_DATE).getString();
 
@@ -53,14 +51,14 @@ public  class MobiResponseHelperFunction {
         pageProperties.put(PAGE_TITLE,pageTitle);
         pageProperties.put(MODIFIED_DATE,lastModifiedDate);
 
-        // get information on Child nodes
+        // get information on Child nodes :  name and path
         NodeIterator iterator = node.getNodes();
         if(iterator!=null)
         {
             HashMap childNodesInfo = new HashMap();
             while(iterator.hasNext())
             {
-                javax.jcr.Node childNode = iterator.nextNode();
+                Node childNode = iterator.nextNode();
                 if(childNode!=null)
                 {
                     childNodesInfo.put(childNode.getName(), childNode.getPath());
@@ -77,3 +75,4 @@ public  class MobiResponseHelperFunction {
 
     }
 }
+
