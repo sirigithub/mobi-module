@@ -38,39 +38,19 @@ import java.util.*;
 import static java.lang.String.format;
 
 /**
- * Created by Sirisha on 22/02/15.
+ * SlingServlet to handle requests to url's with a mobi extension.It calls a helper function to parse the request path and generate a response.
+ * The MIME type of the response is set to mobi to cater to the custom rendering.
  */
 
 @SlingServlet(resourceTypes = {"sling/servlet/default"}, methods = {"GET"}, extensions = {"mobi"},metatype = true)
 @Properties({
-        @Property(name = "service.pid", value = "com.medibank.digital.cq.servlet.TestServlet", propertyPrivate = false),
-        @Property(name = "service.description", value = "Test Servlet", propertyPrivate = false),
-        @Property(name = "service.vendor", value = "Medibank", propertyPrivate = false)})
+        @Property(name = "service.pid", value = "com.medibank.digital.cq.servlet.MobiRequestProcessingServlet", propertyPrivate = false),
+        @Property(name = "service.description", value = "Servlet to process requests with a .mobi extension", propertyPrivate = false),
+        @Property(name = "service.vendor", value = "MobiServlet", propertyPrivate = false)})
 
 public class MobiRequestProcessingServlet extends  SlingSafeMethodsServlet  {
 
-    private static final Logger log = LoggerFactory.getLogger(TestServlet.class);
-    public static final String STATEMENT = "statement";
-
-    /** Query type */
-    public static final String QUERY_TYPE = "queryType";
-
-    /** Result set offset */
-    public static final String OFFSET = "offset";
-
-    /** Number of rows requested */
-    public static final String ROWS = "rows";
-
-    /** property to append to the result */
-    public static final String PROPERTY = "property";
-    public static final String EXCERPT_PATH = "excerptPath";
-
-    /** rep:exerpt */
-    private static final String REP_EXCERPT = "rep:excerpt()";
-
-    public static final String TIDY = "tidy";
-
-
+    private static final Logger log = LoggerFactory.getLogger(MobiRequestProcessingServlet.class);
 
     @SuppressWarnings("unchecked")
     @Override
@@ -83,7 +63,7 @@ public class MobiRequestProcessingServlet extends  SlingSafeMethodsServlet  {
             JSONObject jcrDataFromURL = helperFunction.getResponseObject(resourceResolver,request.getResource().getPath());
 
             response.setHeader("Header","Mobi Response");
-            response.setContentType("application/json");
+            response.setContentType("application/mobi");
             PrintWriter out = response.getWriter();
             out.write(jcrDataFromURL.toString());
         }
