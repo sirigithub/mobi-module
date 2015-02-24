@@ -21,8 +21,14 @@ formats the reponse as Response{
                                    data{
                                         //child node information
                                    }
+                                   
+                                   
                                  }
                               }
+                              
+ The code can be bundled as an osgi module and installed in a CQ5 environment. Once the servlet is registered , it will be invoked for any url such as localhost:4502/conntent/*.mobi
+ 
+ 
                               
                               
 
